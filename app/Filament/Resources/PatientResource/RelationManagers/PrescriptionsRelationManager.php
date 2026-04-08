@@ -23,16 +23,16 @@ class PrescriptionsRelationManager extends RelationManager
         return $table
             ->modifyQueryUsing(fn(Builder $query) => $query->where('doctor_id', auth()->id()))
             ->columns([
-                TextColumn::make('drug.name')->label('Drug')->sortable(),
+                TextColumn::make('drug.name')->label(__('Drug'))->sortable(),
                 TextColumn::make('dose_amount')
-                    ->label('Dose')
+                    ->label(__('Dose'))
                     ->formatStateUsing(fn($record) => $record->dose_amount . ' ' . $record->dose_unit),
                 TextColumn::make('frequency_value')
-                    ->label('Frequency')
-                    ->formatStateUsing(fn($record) => 'Every ' . $record->frequency_value . ' ' . $record->frequency_unit . ', ' . $record->times_per_dose . 'x'),
-                TextColumn::make('starts_on')->date(),
-                TextColumn::make('ends_on')->date()->placeholder('Ongoing'),
-                IconColumn::make('is_active')->boolean()->label('Active'),
+                    ->label(__('Frequency'))
+                    ->formatStateUsing(fn($record) => __('Every') . ' ' . $record->frequency_value . ' ' . $record->frequency_unit . ', ' . $record->times_per_dose . 'x'),
+                TextColumn::make('starts_on')->date()->label('Začátek'),
+                TextColumn::make('ends_on')->date()->placeholder(__('Ongoing')),
+                IconColumn::make('is_active')->boolean()->label(__('Active')),
             ])
             ->headerActions([])
             ->actions([

@@ -24,9 +24,22 @@ class UserResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Administration';
-
     protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Administration');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('User');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Users');
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -34,14 +47,17 @@ class UserResource extends Resource
 
         $accountFields = [
             TextInput::make('name')
+                ->label('Jméno')
                 ->required()
                 ->maxLength(100),
             TextInput::make('email')
+                ->label('E-mail')
                 ->email()
                 ->required()
                 ->unique(User::class, 'email', ignoreRecord: true)
                 ->maxLength(255),
             TextInput::make('password')
+                ->label('Heslo')
                 ->password()
                 ->revealable()
                 ->required(fn(string $operation) => $operation === 'create')
@@ -49,25 +65,26 @@ class UserResource extends Resource
                 ->dehydrated(fn($state) => filled($state))
                 ->maxLength(255),
             Select::make('role')
+                ->label('Role')
                 ->options(UserRole::class)
                 ->required()
                 ->live(),
         ];
 
         $profileFields = [
-            Section::make('Doctor Profile')
+            Section::make(__('Doctor Profile'))
                 ->relationship('doctorProfile')
                 ->schema([
-                    TextInput::make('specialty')->maxLength(100),
-                    TextInput::make('license_number')->maxLength(50),
+                    TextInput::make('specialty')->label('Specializace')->maxLength(100),
+                    TextInput::make('license_number')->label('Číslo licence')->maxLength(50),
                 ])
                 ->visible(fn(Get $get) => $get('role') === UserRole::Doctor->value),
 
-            Section::make('Patient Profile')
+            Section::make(__('Patient Profile'))
                 ->relationship('patientProfile')
                 ->schema([
-                    DatePicker::make('date_of_birth')->maxDate(now()),
-                    Textarea::make('notes')->rows(4)->columnSpanFull(),
+                    DatePicker::make('date_of_birth')->label('Datum narození')->maxDate(now()),
+                    Textarea::make('notes')->label('Poznámky')->rows(4)->columnSpanFull(),
                 ])
                 ->visible(fn(Get $get) => $get('role') === UserRole::Patient->value),
         ];
@@ -75,14 +92,14 @@ class UserResource extends Resource
         if ($isCreate) {
             return $schema->schema([
                 Wizard::make([
-                    Wizard\Step::make('Account')->schema($accountFields),
-                    Wizard\Step::make('Profile')->schema($profileFields),
+                    Wizard\Step::make(__('Account'))->schema($accountFields),
+                    Wizard\Step::make(__('Profile'))->schema($profileFields),
                 ])->columnSpanFull(),
             ]);
         }
 
         return $schema->schema([
-            Section::make('Account')->schema($accountFields),
+            Section::make(__('Account'))->schema($accountFields),
             ...$profileFields,
         ]);
     }
@@ -92,15 +109,19 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Jméno')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('email')
+                    ->label('E-mail')
                     ->searchable()
                     ->copyable(),
                 TextColumn::make('role')
+                    ->label('Role')
                     ->badge()
                     ->color(fn($state) => $state === UserRole::Doctor ? 'success' : 'info'),
                 TextColumn::make('created_at')
+                    ->label('Vytvořeno')
                     ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

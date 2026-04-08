@@ -34,9 +34,22 @@ class PrescriptionResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Clinical';
-
     protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Clinical');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Prescription');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Prescriptions');
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -49,79 +62,91 @@ class PrescriptionResource extends Resource
 
         $step1 = [
             Select::make('patient_id')
-                ->label('Patient')
+                ->label(__('Patient'))
                 ->relationship('patient', 'name', fn(Builder $query) => $query->where('role', UserRole::Patient))
                 ->searchable()
                 ->preload()
                 ->required(),
             Select::make('drug_id')
-                ->label('Drug')
+                ->label(__('Drug'))
                 ->relationship('drug', 'name', fn(Builder $query) => $query->where('is_active', true))
                 ->searchable()
                 ->preload()
                 ->required()
                 ->createOptionForm([
-                    TextInput::make('name')->required()->maxLength(100),
-                    TextInput::make('strength')->maxLength(50),
-                    Toggle::make('is_active')->default(true),
+                    TextInput::make('name')->label('Název')->required()->maxLength(100),
+                    TextInput::make('strength')->label('Síla')->maxLength(50),
+                    Toggle::make('is_active')->label(__('Active'))->default(true),
                 ]),
         ];
 
         $step2 = [
             Grid::make(2)->schema([
                 TextInput::make('dose_amount')
+                    ->label('Množství dávky')
                     ->numeric()
                     ->minValue(0.01)
                     ->step(0.01)
                     ->required(),
                 Select::make('dose_unit')
+                    ->label('Jednotka dávky')
                     ->options(['mg' => 'mg', 'ml' => 'ml', 'mcg' => 'mcg', 'IU' => 'IU', 'tablet' => 'tablet', 'capsule' => 'capsule'])
                     ->required(),
             ]),
             Grid::make(3)->schema([
                 TextInput::make('frequency_value')
-                    ->label('Every')
+                    ->label(__('Every'))
                     ->integer()
                     ->minValue(1)
                     ->required(),
                 Select::make('frequency_unit')
-                    ->label('Unit')
-                    ->options(['hour' => 'hour(s)', 'day' => 'day(s)', 'week' => 'week(s)'])
+                    ->label(__('Unit'))
+                    ->options([
+                        'hour' => __('hour(s)'),
+                        'day'  => __('day(s)'),
+                        'week' => __('week(s)'),
+                    ])
                     ->required(),
                 TextInput::make('times_per_dose')
-                    ->label('Times per dose')
+                    ->label(__('Times per dose'))
                     ->integer()
                     ->minValue(1)
                     ->default(1)
                     ->required(),
             ]),
             Textarea::make('instructions')
+                ->label(__('Instructions'))
                 ->rows(3)
                 ->columnSpanFull(),
         ];
 
         $step3 = [
             DatePicker::make('starts_on')
+                ->label('Začátek')
                 ->required()
                 ->default(today()),
             DatePicker::make('ends_on')
+                ->label('Konec')
                 ->nullable()
                 ->afterOrEqual('starts_on'),
             Toggle::make('is_active')
+                ->label(__('Active'))
                 ->default(true)
                 ->inline(false),
             Repeater::make('schedules')
                 ->relationship('schedules')
                 ->schema([
                     TimePicker::make('time_of_day')
+                        ->label('Čas dávky')
                         ->seconds(false)
                         ->required(),
                     TextInput::make('label')
+                        ->label('Popis')
                         ->maxLength(50)
-                        ->placeholder('Morning, After lunch…'),
+                        ->placeholder(__('Morning, After lunch…')),
                 ])
                 ->columns(2)
-                ->addActionLabel('Add dose time')
+                ->addActionLabel(__('Add dose time'))
                 ->defaultItems(0)
                 ->collapsible()
                 ->columnSpanFull(),
@@ -130,40 +155,40 @@ class PrescriptionResource extends Resource
         if ($isCreate) {
             return $schema->schema([
                 Wizard::make([
-                    Wizard\Step::make('Patient & Drug')->schema($step1),
-                    Wizard\Step::make('Dosage & Frequency')->schema($step2),
-                    Wizard\Step::make('Schedule & Dates')->schema($step3),
+                    Wizard\Step::make(__('Patient & Drug'))->schema($step1),
+                    Wizard\Step::make(__('Dosage & Frequency'))->schema($step2),
+                    Wizard\Step::make(__('Schedule & Dates'))->schema($step3),
                 ])->columnSpanFull(),
             ]);
         }
 
         return $schema->schema([
-            Section::make('Patient & Drug')->schema($step1),
-            Section::make('Dosage & Frequency')->schema($step2),
-            Section::make('Schedule & Dates')->schema($step3),
+            Section::make(__('Patient & Drug'))->schema($step1),
+            Section::make(__('Dosage & Frequency'))->schema($step2),
+            Section::make(__('Schedule & Dates'))->schema($step3),
         ]);
     }
 
     public static function infolist(Schema $schema): Schema
     {
         return $schema->schema([
-            Section::make('Patient & Drug')->schema([
-                TextEntry::make('patient.name')->label('Patient'),
-                TextEntry::make('drug.name')->label('Drug'),
-                TextEntry::make('drug.strength')->label('Strength'),
+            Section::make(__('Patient & Drug'))->schema([
+                TextEntry::make('patient.name')->label(__('Patient')),
+                TextEntry::make('drug.name')->label(__('Drug')),
+                TextEntry::make('drug.strength')->label(__('Strength')),
             ])->columns(3),
-            Section::make('Dosage')->schema([
-                TextEntry::make('dose_amount')->label('Dose Amount'),
-                TextEntry::make('dose_unit')->label('Unit'),
-                TextEntry::make('frequency_value')->label('Every'),
-                TextEntry::make('frequency_unit')->label('Frequency Unit'),
-                TextEntry::make('times_per_dose')->label('Times per Dose'),
-                TextEntry::make('instructions')->label('Instructions')->placeholder('None')->columnSpanFull(),
+            Section::make(__('Dosage'))->schema([
+                TextEntry::make('dose_amount')->label(__('Dose Amount')),
+                TextEntry::make('dose_unit')->label(__('Unit')),
+                TextEntry::make('frequency_value')->label(__('Every')),
+                TextEntry::make('frequency_unit')->label(__('Frequency Unit')),
+                TextEntry::make('times_per_dose')->label(__('Times per Dose')),
+                TextEntry::make('instructions')->label(__('Instructions'))->placeholder(__('None'))->columnSpanFull(),
             ])->columns(3),
-            Section::make('Schedule')->schema([
-                TextEntry::make('starts_on')->date()->label('Starts'),
-                TextEntry::make('ends_on')->date()->label('Ends')->placeholder('Ongoing'),
-                IconEntry::make('is_active')->boolean()->label('Active'),
+            Section::make(__('Schedule'))->schema([
+                TextEntry::make('starts_on')->date()->label(__('Starts')),
+                TextEntry::make('ends_on')->date()->label(__('Ends'))->placeholder(__('Ongoing')),
+                IconEntry::make('is_active')->boolean()->label(__('Active')),
             ])->columns(3),
         ]);
     }
@@ -173,42 +198,43 @@ class PrescriptionResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('patient.name')
-                    ->label('Patient')
+                    ->label(__('Patient'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('drug.name')
-                    ->label('Drug')
+                    ->label(__('Drug'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('dose_amount')
-                    ->label('Dose')
+                    ->label(__('Dose'))
                     ->formatStateUsing(fn($record) => $record->dose_amount . ' ' . $record->dose_unit),
                 TextColumn::make('frequency_value')
-                    ->label('Frequency')
-                    ->formatStateUsing(fn($record) => 'Every ' . $record->frequency_value . ' ' . $record->frequency_unit . ', ' . $record->times_per_dose . 'x'),
+                    ->label(__('Frequency'))
+                    ->formatStateUsing(fn($record) => __('Every') . ' ' . $record->frequency_value . ' ' . $record->frequency_unit . ', ' . $record->times_per_dose . 'x'),
                 TextColumn::make('starts_on')
+                    ->label('Začátek')
                     ->date()
                     ->sortable(),
                 TextColumn::make('ends_on')
                     ->date()
-                    ->placeholder('Ongoing'),
+                    ->placeholder(__('Ongoing')),
                 ToggleColumn::make('is_active')
-                    ->label('Active'),
+                    ->label(__('Active')),
             ])
             ->filters([
                 SelectFilter::make('patient_id')
                     ->relationship('patient', 'name')
                     ->searchable()
                     ->preload()
-                    ->label('Patient'),
+                    ->label(__('Patient')),
                 SelectFilter::make('drug_id')
                     ->relationship('drug', 'name')
                     ->searchable()
                     ->preload()
-                    ->label('Drug'),
-                TernaryFilter::make('is_active')->label('Active only'),
+                    ->label(__('Drug')),
+                TernaryFilter::make('is_active')->label(__('Active only')),
                 Filter::make('active_today')
-                    ->label('Active Today')
+                    ->label(__('Active Today'))
                     ->query(fn(Builder $query) => $query
                         ->where('starts_on', '<=', today())
                         ->where(fn(Builder $q) => $q

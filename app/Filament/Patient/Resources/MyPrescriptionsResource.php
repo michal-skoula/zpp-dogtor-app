@@ -21,9 +21,15 @@ class MyPrescriptionsResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $modelLabel = 'Prescription';
+    public static function getModelLabel(): string
+    {
+        return __('Prescription');
+    }
 
-    protected static ?string $pluralModelLabel = 'My Prescriptions';
+    public static function getPluralModelLabel(): string
+    {
+        return __('My Prescriptions');
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -35,46 +41,46 @@ class MyPrescriptionsResource extends Resource
     public static function infolist(Schema $schema): Schema
     {
         return $schema->schema([
-            Section::make('Drug')->schema([
-                TextEntry::make('drug.name')->label('Drug'),
-                TextEntry::make('drug.generic_name')->label('Generic Name')->placeholder('—'),
-                TextEntry::make('drug.strength')->label('Strength')->placeholder('—'),
-                TextEntry::make('drug.form')->label('Form')->placeholder('—'),
+            Section::make(__('Drug'))->schema([
+                TextEntry::make('drug.name')->label(__('Drug')),
+                TextEntry::make('drug.generic_name')->label(__('Generic Name'))->placeholder('—'),
+                TextEntry::make('drug.strength')->label(__('Strength'))->placeholder('—'),
+                TextEntry::make('drug.form')->label(__('Form'))->placeholder('—'),
             ])->columns(2),
 
-            Section::make('Dosage')->schema([
+            Section::make(__('Dosage'))->schema([
                 TextEntry::make('dose_amount')
-                    ->label('Dose')
+                    ->label(__('Dose'))
                     ->formatStateUsing(fn($record) => $record->dose_amount . ' ' . $record->dose_unit),
                 TextEntry::make('frequency_value')
-                    ->label('Frequency')
-                    ->formatStateUsing(fn($record) => 'Every ' . $record->frequency_value . ' ' . $record->frequency_unit . '(s), ' . $record->times_per_dose . 'x per dose'),
+                    ->label(__('Frequency'))
+                    ->formatStateUsing(fn($record) => __('Every') . ' ' . $record->frequency_value . ' ' . $record->frequency_unit . '(s), ' . $record->times_per_dose . 'x per dose'),
                 TextEntry::make('instructions')
-                    ->label('Instructions')
-                    ->placeholder('None')
+                    ->label(__('Instructions'))
+                    ->placeholder(__('None'))
                     ->columnSpanFull(),
             ])->columns(2),
 
-            Section::make('Schedule')->schema([
-                TextEntry::make('starts_on')->date()->label('Starts'),
-                TextEntry::make('ends_on')->date()->label('Ends')->placeholder('Ongoing'),
-                IconEntry::make('is_active')->boolean()->label('Active'),
+            Section::make(__('Schedule'))->schema([
+                TextEntry::make('starts_on')->date()->label(__('Starts')),
+                TextEntry::make('ends_on')->date()->label(__('Ends'))->placeholder(__('Ongoing')),
+                IconEntry::make('is_active')->boolean()->label(__('Active')),
                 RepeatableEntry::make('schedules')
-                    ->label('Dose Times')
+                    ->label(__('Dose Times'))
                     ->schema([
                         TextEntry::make('time_of_day')
-                            ->label('Time')
+                            ->label(__('Time'))
                             ->time('H:i'),
                         TextEntry::make('label')
-                            ->label('Label')
+                            ->label(__('Label'))
                             ->placeholder('—'),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),
             ])->columns(3),
 
-            Section::make('Prescriber')->schema([
-                TextEntry::make('doctor.name')->label('Doctor'),
+            Section::make(__('Prescriber'))->schema([
+                TextEntry::make('doctor.name')->label(__('Doctor')),
             ]),
         ]);
     }
@@ -84,20 +90,20 @@ class MyPrescriptionsResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('drug.name')
-                    ->label('Drug')
+                    ->label(__('Drug'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('drug.strength')
-                    ->label('Strength'),
+                    ->label(__('Strength')),
                 TextColumn::make('dose_amount')
-                    ->label('Dose')
+                    ->label(__('Dose'))
                     ->formatStateUsing(fn($record) => $record->dose_amount . ' ' . $record->dose_unit),
                 TextColumn::make('frequency_value')
-                    ->label('Frequency')
-                    ->formatStateUsing(fn($record) => 'Every ' . $record->frequency_value . ' ' . $record->frequency_unit . '(s)'),
+                    ->label(__('Frequency'))
+                    ->formatStateUsing(fn($record) => __('Every') . ' ' . $record->frequency_value . ' ' . $record->frequency_unit . '(s)'),
                 TextColumn::make('starts_on')->date()->sortable(),
-                TextColumn::make('ends_on')->date()->placeholder('Ongoing'),
-                IconColumn::make('is_active')->boolean()->label('Active'),
+                TextColumn::make('ends_on')->date()->placeholder(__('Ongoing')),
+                IconColumn::make('is_active')->boolean()->label(__('Active')),
             ])
             ->defaultSort('is_active', 'desc');
     }

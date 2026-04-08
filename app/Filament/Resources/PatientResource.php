@@ -20,17 +20,29 @@ class PatientResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Clinical';
-
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationLabel = 'My Patients';
-
-    protected static ?string $modelLabel = 'Patient';
-
-    protected static ?string $pluralModelLabel = 'Patients';
-
     protected static ?string $slug = 'patients';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Clinical');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('My Patients');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Patient');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Patients');
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -47,15 +59,15 @@ class PatientResource extends Resource
     public static function infolist(Schema $schema): Schema
     {
         return $schema->schema([
-            Section::make('Patient Details')->schema([
-                TextEntry::make('name'),
-                TextEntry::make('email'),
+            Section::make(__('Patient Details'))->schema([
+                TextEntry::make('name')->label('Jméno'),
+                TextEntry::make('email')->label('E-mail'),
                 TextEntry::make('patientProfile.date_of_birth')
                     ->date()
-                    ->label('Date of Birth'),
+                    ->label(__('Date of Birth')),
                 TextEntry::make('patientProfile.notes')
-                    ->label('Notes')
-                    ->placeholder('None')
+                    ->label(__('Notes'))
+                    ->placeholder(__('None'))
                     ->columnSpanFull(),
             ])->columns(2),
         ]);
@@ -66,16 +78,18 @@ class PatientResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Jméno')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('email')
+                    ->label('E-mail')
                     ->searchable(),
                 TextColumn::make('patientProfile.date_of_birth')
                     ->date()
-                    ->label('Date of Birth'),
+                    ->label(__('Date of Birth')),
                 TextColumn::make('prescriptionsAsPatient_count')
                     ->counts('prescriptionsAsPatient')
-                    ->label('Prescriptions'),
+                    ->label(__('Prescriptions')),
             ]);
     }
 
