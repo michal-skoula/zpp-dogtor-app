@@ -43,7 +43,6 @@ class MyPrescriptionsResource extends Resource
         return $schema->schema([
             Section::make(__('Drug'))->schema([
                 TextEntry::make('drug.name')->label(__('Drug')),
-                TextEntry::make('drug.generic_name')->label(__('Generic Name'))->placeholder('—'),
                 TextEntry::make('drug.strength')->label(__('Strength'))->placeholder('—'),
                 TextEntry::make('drug.form')->label(__('Form'))->placeholder('—'),
             ])->columns(2),
@@ -54,7 +53,7 @@ class MyPrescriptionsResource extends Resource
                     ->formatStateUsing(fn($record) => $record->dose_amount . ' ' . $record->dose_unit),
                 TextEntry::make('frequency_value')
                     ->label(__('Frequency'))
-                    ->formatStateUsing(fn($record) => __('Every') . ' ' . $record->frequency_value . ' ' . $record->frequency_unit . '(s), ' . $record->times_per_dose . 'x per dose'),
+                    ->formatStateUsing(fn($record) => __('Every') . ' ' . $record->frequency_value . ' ' . __($record->frequency_unit . '(s)') . ', ' . $record->times_per_dose . 'x per dose'),
                 TextEntry::make('instructions')
                     ->label(__('Instructions'))
                     ->placeholder(__('None'))
@@ -100,9 +99,9 @@ class MyPrescriptionsResource extends Resource
                     ->formatStateUsing(fn($record) => $record->dose_amount . ' ' . $record->dose_unit),
                 TextColumn::make('frequency_value')
                     ->label(__('Frequency'))
-                    ->formatStateUsing(fn($record) => __('Every') . ' ' . $record->frequency_value . ' ' . $record->frequency_unit . '(s)'),
-                TextColumn::make('starts_on')->date()->sortable(),
-                TextColumn::make('ends_on')->date()->placeholder(__('Ongoing')),
+                    ->formatStateUsing(fn($record) => __('Every') . ' ' . $record->frequency_value . ' ' . __($record->frequency_unit . '(s)') . ''),
+                TextColumn::make('starts_on')->label(__('Starts'))->date()->sortable(),
+                TextColumn::make('ends_on')->label(__('Ends'))->date()->placeholder(__('Ongoing')),
                 IconColumn::make('is_active')->boolean()->label(__('Active')),
             ])
             ->defaultSort('is_active', 'desc');

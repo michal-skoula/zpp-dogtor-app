@@ -48,16 +48,13 @@ class DrugResource extends Resource
                     ->required()
                     ->unique(Drug::class, 'name', ignoreRecord: true)
                     ->maxLength(100),
-                TextInput::make('generic_name')
-                    ->label('Generický název')
-                    ->maxLength(100),
                 Grid::make(2)->schema([
                     TextInput::make('form')
                         ->label('Forma')
                         ->maxLength(50)
                         ->placeholder(__('tablet, syrup, injection…')),
                     TextInput::make('strength')
-                        ->label('Síla')
+                        ->label('Dávka')
                         ->maxLength(50)
                         ->placeholder('400mg, 250mg/5ml…'),
                 ]),
@@ -83,16 +80,12 @@ class DrugResource extends Resource
                     ->label('Název')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('generic_name')
-                    ->label('Generický název')
-                    ->searchable()
-                    ->toggleable(),
                 TextColumn::make('form')
                     ->label('Forma')
                     ->badge()
                     ->color('gray'),
                 TextColumn::make('strength')
-                    ->label('Síla'),
+                    ->label('Dávka'),
                 ToggleColumn::make('is_active')
                     ->label(__('Active')),
                 TextColumn::make('updated_at')

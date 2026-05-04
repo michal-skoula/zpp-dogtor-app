@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
 
         Drug::create([
             'name' => 'Ibuprofen',
-            'generic_name' => 'Ibuprofenum',
             'form' => 'tablet',
             'strength' => '400mg',
             'is_active' => true,

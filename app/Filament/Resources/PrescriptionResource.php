@@ -75,7 +75,7 @@ class PrescriptionResource extends Resource
                 ->required()
                 ->createOptionForm([
                     TextInput::make('name')->label('Název')->required()->maxLength(100),
-                    TextInput::make('strength')->label('Síla')->maxLength(50),
+                    TextInput::make('strength')->label('Dávka')->maxLength(50),
                     Toggle::make('is_active')->label(__('Active'))->default(true),
                 ]),
         ];
@@ -181,7 +181,7 @@ class PrescriptionResource extends Resource
                 TextEntry::make('dose_amount')->label(__('Dose Amount')),
                 TextEntry::make('dose_unit')->label(__('Unit')),
                 TextEntry::make('frequency_value')->label(__('Every')),
-                TextEntry::make('frequency_unit')->label(__('Frequency Unit')),
+                TextEntry::make('frequency_unit')->label(__('Frequency Unit'))->formatStateUsing(fn($state) => __($state . '(s)')),
                 TextEntry::make('times_per_dose')->label(__('Times per Dose')),
                 TextEntry::make('instructions')->label(__('Instructions'))->placeholder(__('None'))->columnSpanFull(),
             ])->columns(3),
@@ -210,12 +210,13 @@ class PrescriptionResource extends Resource
                     ->formatStateUsing(fn($record) => $record->dose_amount . ' ' . $record->dose_unit),
                 TextColumn::make('frequency_value')
                     ->label(__('Frequency'))
-                    ->formatStateUsing(fn($record) => __('Every') . ' ' . $record->frequency_value . ' ' . $record->frequency_unit . ', ' . $record->times_per_dose . 'x'),
+                    ->formatStateUsing(fn($record) => __('Every') . ' ' . $record->frequency_value . ' ' . __($record->frequency_unit . '(s)') . ', ' . $record->times_per_dose . 'x'),
                 TextColumn::make('starts_on')
                     ->label('Začátek')
                     ->date()
                     ->sortable(),
                 TextColumn::make('ends_on')
+                    ->label(__('Ends'))
                     ->date()
                     ->placeholder(__('Ongoing')),
                 ToggleColumn::make('is_active')
