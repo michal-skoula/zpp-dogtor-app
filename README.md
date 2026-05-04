@@ -42,7 +42,8 @@ npm run build
 ### Start the dev server
 
 ```bash
-composer run dev
+php artisan serve
+npm run dev
 ```
 
 This starts the Laravel server, queue listener, and Vite dev server concurrently.
