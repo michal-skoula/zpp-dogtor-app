@@ -68,7 +68,7 @@ class ListJourneys extends ListRecords
                     $ip = app(DogSettings::class)->ip_address;
 
                     try {
-                        $response = Http::timeout(5)->get("http://{$ip}:8000/api/move/{$path->going_moves}");
+                        $response = Http::timeout(5)->post("http://{$ip}:8000/api/move/{$path->going_moves}");
 
                         if (! $response->successful()) {
                             $journey->update(['status' => 'error']);
