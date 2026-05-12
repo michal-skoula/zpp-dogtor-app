@@ -13,9 +13,9 @@ class ManageDogSettings extends SettingsPage
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCpuChip;
 
-    protected static ?string $navigationLabel = 'Robot Settings';
+    protected static ?string $navigationLabel = 'Nastavení robota';
 
-    protected static ?string $title = 'Robot Settings';
+    protected static ?string $title = 'Nastavení robota';
 
     protected static string $settings = DogSettings::class;
 
@@ -24,7 +24,7 @@ class ManageDogSettings extends SettingsPage
         return $schema
             ->components([
                 TextInput::make('ip_address')
-                    ->label('Dog IP Address')
+                    ->label('IP adresa psa')
                     ->required(),
             ]);
     }

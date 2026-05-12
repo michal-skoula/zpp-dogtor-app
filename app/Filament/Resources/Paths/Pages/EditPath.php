@@ -13,7 +13,6 @@ class EditPath extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            PathResource::dispatchAction(),
             DeleteAction::make(),
         ];
     }

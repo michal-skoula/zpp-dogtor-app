@@ -21,6 +21,6 @@ class Drug extends Model
 
     public function journeys(): BelongsToMany
     {
-        return $this->belongsToMany(Journey::class)->withPivot('quantity');
+        return $this->belongsToMany(Journey::class, 'journey_drug')->withPivot('quantity');
     }
 }

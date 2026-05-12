@@ -15,22 +15,27 @@ class JourneysTable
             ->defaultSort('dispatched_at', 'desc')
             ->columns([
                 TextColumn::make('path.name')
-                    ->label(__('Path'))
+                    ->label('Trasa')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('drugs_summary')
-                    ->label(__('Drugs'))
+                    ->label('Léky')
                     ->state(fn (Journey $record): string => $record->drugs
-                        ->map(fn ($drug): string => "{$drug->name} (x{$drug->pivot->quantity})")
+                        ->map(fn ($drug): string => "{$drug->name} (×{$drug->pivot->quantity})")
                         ->join(', ') ?: '—'
                     ),
                 TextColumn::make('dispatched_at')
-                    ->label(__('Dispatched'))
-                    ->dateTime()
+                    ->label('Vyslán')
+                    ->dateTime('d. m. Y H:i')
                     ->sortable(),
                 TextColumn::make('status')
-                    ->label(__('Status'))
+                    ->label('Stav')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'success' => 'Úspěch',
+                        'error' => 'Chyba',
+                        default => $state,
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'success' => 'success',
                         'error' => 'danger',

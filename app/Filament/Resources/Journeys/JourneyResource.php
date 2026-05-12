@@ -20,7 +20,17 @@ class JourneyResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Robot');
+        return 'Robot';
+    }
+
+    public static function getModelLabel(): string
+    {
+        return 'Cesta';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Cesty';
     }
 
     public static function canCreate(): bool

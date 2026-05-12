@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Paths\Tables;
 
-use App\Filament\Resources\Paths\PathResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -16,30 +15,29 @@ class PathsTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('Name'))
+                    ->label('Název')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('description')
-                    ->label(__('Description'))
+                    ->label('Popis')
                     ->limit(60)
                     ->placeholder('—'),
                 TextColumn::make('going_moves')
-                    ->label(__('Going Moves'))
+                    ->label('Cesta tam')
                     ->limit(40),
                 TextColumn::make('updated_at')
-                    ->label(__('Updated'))
+                    ->label('Aktualizováno')
                     ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([])
             ->recordActions([
-                PathResource::dispatchAction(),
-                EditAction::make(),
+                EditAction::make()->label('Upravit'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()->label('Smazat vybrané'),
                 ]),
             ]);
     }

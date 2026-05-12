@@ -13,32 +13,32 @@ class PathForm
     {
         return $schema
             ->components([
-                Section::make(__('Path Identity'))
+                Section::make('Základní informace')
                     ->schema([
                         TextInput::make('name')
-                            ->label(__('Name'))
+                            ->label('Název')
                             ->required()
                             ->maxLength(255),
                         Textarea::make('description')
-                            ->label(__('Description'))
+                            ->label('Popis')
                             ->rows(3)
                             ->columnSpanFull(),
                     ]),
-                Section::make(__('Move Instructions'))
-                    ->description(__('Comma-separated move strings passed to /api/move/{moves}'))
+                Section::make('Instrukce pohybu')
+                    ->description('Řetězce pohybů předávané na /api/move/{moves}')
                     ->schema([
                         TextInput::make('going_moves')
-                            ->label(__('Going Moves'))
+                            ->label('Cesta tam')
                             ->required()
-                            ->placeholder('forward,left,forward'),
+                            ->placeholder('forward:1,left:1'),
                         TextInput::make('button_press_moves')
-                            ->label(__('Button Press Moves'))
+                            ->label('Po stisku tlačítka')
                             ->required()
-                            ->placeholder('sit,wait'),
+                            ->placeholder('sit:1'),
                         TextInput::make('return_moves')
-                            ->label(__('Return Moves'))
+                            ->label('Cesta zpět')
                             ->required()
-                            ->placeholder('right,right,forward'),
+                            ->placeholder('backward:1'),
                     ]),
             ]);
     }
