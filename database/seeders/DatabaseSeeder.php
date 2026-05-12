@@ -17,12 +17,14 @@ class DatabaseSeeder extends Seeder
         $doctor = User::factory()->create([
             'name' => 'Dr. House',
             'email' => 'doctor@example.com',
+            'password' => bcrypt('doctor'),
             'role' => UserRole::Doctor,
         ]);
 
         $patient = User::factory()->create([
             'name' => 'John Patient',
             'email' => 'patient@example.com',
+            'password' => bcrypt('patient'),
             'role' => UserRole::Patient,
         ]);
 
